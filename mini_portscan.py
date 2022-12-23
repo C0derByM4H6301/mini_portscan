@@ -1,12 +1,11 @@
 import socket
 
-def get_open_ports(ip_address):
+def scan_ports(ip_address, start_port, end_port):
     open_ports = []
-    for port in range(1, 65535):
+    for port in range(start_port, end_port + 1):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(0.5)
         try:
-            print(f"port: {port}")
             s.connect((ip_address, port))
             open_ports.append(port)
             s.shutdown(1)
@@ -23,14 +22,11 @@ def get_service_name(port):
         return "unknown"
 
 ip_address = input("IP adresini girin: ")
-open_ports = get_open_ports(ip_address)
-closed_ports = set(range(1, 65535)) - set(open_ports)
+start_port = int(input("Başlangıç portunu girin: "))
+end_port = int(input("Bitiş portunu girin: "))
+open_ports = scan_ports(ip_address, start_port, end_port)
 
 print("Açık portlar:")
 for port in open_ports:
     service_name = get_service_name(port)
     print("Port: {}, Service: {}".format(port, service_name))
-
-print("\nKapalı portlar:")
-for port in closed_ports:
-    print("Port: {}".format(port))
